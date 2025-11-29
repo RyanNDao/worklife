@@ -5,9 +5,6 @@ import { initTimer, timerEmitter } from "./timerState";
 import { EVENTS } from '../shared/constants';
 
 
-// GOOD - stays alive
-let appIcon: Tray | null = null; // Module level
-
 function initApp() {
   initTimer();
   createSettingsWindow();
@@ -22,9 +19,9 @@ function createSettingsWindow() {
     height: 600,
   });
   if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(`${process.env.VITE_DEV_SERVER_URL}/settings/`);
+    win.loadURL(`${process.env.VITE_DEV_SERVER_URL}/dashboard/`);
   } else {
-    win.loadFile(path.join(__dirname, '../renderer/settings/index.html'));
+    win.loadFile(path.join(__dirname, '../renderer/dashboard/index.html'));
   }
 
   win.on('close', (event) => {
@@ -32,14 +29,14 @@ function createSettingsWindow() {
     win.hide();
   })
 
-  appIcon = new Tray(path.join(__dirname, '../assets/dog.png'))
+  let tray = new Tray(path.join(__dirname, '../assets/dog.png'));
+  tray.setToolTip('Work Life');
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Show Settings', click: () => { win.show() } },
-    { label: 'Quit', click: () => { win.destroy() } },
+    { label: 'Quit', click: () => { win.destroy(); app.quit(); } },
   ])
   
-  appIcon.setContextMenu(contextMenu);
-  console.log(appIcon)
+  tray.setContextMenu(contextMenu);
 }
 
 function createBreakWindow() {

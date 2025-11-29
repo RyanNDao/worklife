@@ -16,7 +16,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        settings: path.resolve(__dirname, 'src/renderer/settings/index.html'),
+        dashboard: path.resolve(__dirname, 'src/renderer/dashboard/index.html'),
         break: path.resolve(__dirname, 'src/renderer/break/index.html'),
       }
     }
