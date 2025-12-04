@@ -1,9 +1,11 @@
-import { app, BrowserWindow, Menu, Tray } from 'electron';
-import path from 'path';
-import { getHostsFileContent, setHostsFileContent } from './hostsFile';
-import { initTimer, timerEmitter } from "./timerState";
-import { EVENTS } from '../shared/constants';
+import { app, BrowserWindow, Menu, Tray } from "electron";
+import path from "path";
+import { getHostsFileContent, setHostsFileContent } from "./hostsFile";
+import { initTimer, timerEmitter, TimerState } from "./timerState";
+import { EVENTS } from "../shared/constants";
+import { formatMsToMMSS } from "../shared/utils/time";
 
+let settingsWindow: BrowserWindow | null = null;
 
 function initApp() {
   initTimer();
@@ -13,30 +15,57 @@ function initApp() {
   // createWindow();
 }
 
+const handleTimerUpdate = (timerState: TimerState) => {
+  if (settingsWindow) {
+    settingsWindow.webContents.send("timer:update", timerState);
+  }
+};
+
+timerEmitter.on(EVENTS.TIMER.RUNNING, handleTimerUpdate);
+timerEmitter.on(EVENTS.TIMER.ON_BREAK, handleTimerUpdate);
+
+
 function createSettingsWindow() {
-  const win = new BrowserWindow({
+  settingsWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"), // Compiled preload file
+    },
   });
   if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(`${process.env.VITE_DEV_SERVER_URL}/dashboard/`);
+    settingsWindow.loadURL(`${process.env.VITE_DEV_SERVER_URL}/dashboard/`);
   } else {
-    win.loadFile(path.join(__dirname, '../renderer/dashboard/index.html'));
+    settingsWindow.loadFile(
+      path.join(__dirname, "../renderer/dashboard/index.html")
+    );
   }
 
-  win.on('close', (event) => {
+  settingsWindow.on("close", (event) => {
     event.preventDefault();
-    win.hide();
-  })
+    settingsWindow!.hide();
+  });
 
-  let tray = new Tray(path.join(__dirname, '../assets/dog.png'));
-  tray.setToolTip('Work Life');
+  let tray = new Tray(path.join(__dirname, "../assets/dog.png"));
+  tray.setToolTip("Work Life");
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Show Settings', click: () => { win.show() } },
-    { label: 'Quit', click: () => { win.destroy(); app.quit(); } },
-  ])
-  
+    {
+      label: "Show Settings",
+      click: () => {
+        settingsWindow!.show();
+      },
+    },
+    {
+      label: "Quit",
+      click: () => {
+        settingsWindow!.destroy();
+        app.quit();
+      },
+    },
+  ]);
+
   tray.setContextMenu(contextMenu);
+  return settingsWindow;
 }
 
 function createBreakWindow() {
@@ -47,25 +76,23 @@ function createBreakWindow() {
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(`${process.env.VITE_DEV_SERVER_URL}/break/`);
   } else {
-    win.loadFile(path.join(__dirname, '../renderer/break/index.html'));
+    win.loadFile(path.join(__dirname, "../renderer/break/index.html"));
   }
 }
 
-
 function createWindow() {
-
   const win = new BrowserWindow();
   // win.setKiosk(true);
   timerEmitter.on(EVENTS.TIMER.START_BREAK, () => {
-    console.log('break started')
-  })
+    console.log("break started");
+  });
 
   // In dev: load from Vite server (http://localhost:5173)
   // In prod: load from built files
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(__dirname, '../renderer/index.html'));
+    win.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
   // setHostsFileContent();
 }

@@ -1,4 +1,3 @@
-import { NavLink } from "react-router";
 import DashboardTab from "./DashboardTab";
 
 export default function TopTabs() {

@@ -7,6 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "sourceMap": true,
+    "composite": true
   },
-  "include": ["src/main/**/*"],
+  "include": ["src/main/**/*", "src/shared/**/*"],
 }
