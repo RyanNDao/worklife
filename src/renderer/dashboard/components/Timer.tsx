@@ -1,14 +1,20 @@
-import { useEffect, useState } from "react";
 import { TimerState } from "../../../main/timerState";
+import TimerTimeDisplay from "./TimerTimeDisplay";
+import TimerButtons from "./TimerButtons";
 
-export default function Timer() {
-  let [timerStateObject, setTimerStateObject] = useState<TimerState>();
-  useEffect(() => {
-    window.electronAPI.onTimerUpdate((timerState) => {
-      console.log("Received timer update:", timerState);
-      setTimerStateObject(timerState);
-    });
-  }, []);
+interface TimerProps {
+  timerState?: TimerState;
+}
 
-  return <>timer contents {timerStateObject?.currentCountdownMs} {timerStateObject?.status} </>;
+export default function Timer({ timerState }: TimerProps) {
+  return (
+    <>
+      {timerState && (
+        <div className="flex flex-col grow">
+          <TimerTimeDisplay timerState={timerState} />
+          <TimerButtons/>
+        </div>
+      )}
+    </>
+  );
 }

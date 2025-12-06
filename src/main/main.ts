@@ -12,15 +12,14 @@ function initApp() {
   createSettingsWindow();
   createBreakWindow();
 
-  // createWindow();
 }
 
+// Sends timer state to the ipc renderer 
 const handleTimerUpdate = (timerState: TimerState) => {
   if (settingsWindow) {
     settingsWindow.webContents.send("timer:update", timerState);
   }
 };
-
 timerEmitter.on(EVENTS.TIMER.RUNNING, handleTimerUpdate);
 timerEmitter.on(EVENTS.TIMER.ON_BREAK, handleTimerUpdate);
 

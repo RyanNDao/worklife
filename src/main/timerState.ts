@@ -4,7 +4,7 @@ import fs from "fs";
 import { EventEmitter } from "events";
 import { EVENTS } from "../shared/constants";
 
-type TimerStatus = "RUNNING" | "PAUSED" | "BREAK";
+export type TimerStatus = "RUNNING" | "PAUSED" | "BREAK";
 export interface TimerState {
   currentCountdownMs: number;
   status: TimerStatus;
