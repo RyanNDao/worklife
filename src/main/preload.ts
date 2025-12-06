@@ -6,7 +6,7 @@ const TIMER_UPDATE_CHANNEL = "timer:update"; // TODO: Fix this so we can get it 
 
 contextBridge.exposeInMainWorld("electronAPI", {
   onTimerUpdate: (callback: (arg0: TimerState) => void) => {
-    ipcRenderer.on(TIMER_UPDATE_CHANNEL, (event, data) => {
+    ipcRenderer.on(EVENTS.IPC_CHANNELS.TIMER_UPDATE, (event, data) => {
       callback(data);
     });
   },

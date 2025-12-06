@@ -29,7 +29,7 @@ function createSettingsWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"), // Compiled preload file
+      preload: path.join(__dirname, "../preload.js"), // Compiled preload file
     },
   });
   if (process.env.VITE_DEV_SERVER_URL) {

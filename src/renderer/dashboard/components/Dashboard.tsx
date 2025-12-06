@@ -1,5 +1,5 @@
-import { HashRouter, Routes, Route, Link, Navigate } from "react-router";
-import React, { useEffect, useState } from "react";
+import { HashRouter, Routes, Route, Navigate } from "react-router";
+import { useEffect, useState } from "react";
 import TopTabs from "./TopTabs";
 import Timer from "./Timer";
 import Settings from "./Settings";

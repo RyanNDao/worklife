@@ -12,7 +12,7 @@ export default function Timer({ timerState }: TimerProps) {
       {timerState && (
         <div className="flex flex-col grow">
           <TimerTimeDisplay timerState={timerState} />
-          <TimerButtons/>
+          <TimerButtons timerState={timerState}/>
         </div>
       )}
     </>
